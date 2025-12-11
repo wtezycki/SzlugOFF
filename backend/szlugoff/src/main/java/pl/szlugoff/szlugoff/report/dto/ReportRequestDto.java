@@ -5,11 +5,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record ReportRequestDto(
-        @NotNull(message="Szerokość graficzna jest wymagana")
+        @NotNull(message="{validation.latitude.required}")
         @Min(-90) @Max(90)
         Double latitude,
 
-        @NotNull(message="Długość geograficzna jest wymagana")
+        @NotNull(message="{validation.longitude.required}")
         @Min(-180) @Max(180)
         Double longitude,
 
