@@ -19,7 +19,7 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping
-    public ResponseEntity<ReportResponseDto> createReport(@ModelAttribute ReportRequestDto request){
+    public ResponseEntity<ReportResponseDto> createReport(@RequestBody @Valid ReportRequestDto request){
         ReportResponseDto response = reportService.createReport(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
