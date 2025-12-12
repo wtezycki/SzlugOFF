@@ -10,5 +10,6 @@ public record ReportResponseDto(
         Double latitude,
         Double longitude,
         ReportStatus status,
-        LocalDateTime createdAt
-) {}
+        LocalDateTime createdAt,
+        String description
+) {}    
