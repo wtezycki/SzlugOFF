@@ -8,5 +8,4 @@ public enum ReportStatus {
     CONFIRMED,
     REJECTED,
     IN_PROGRESS;
-
 }

@@ -27,7 +27,7 @@ public interface ReportMapper {
     // Entity -> Response
     @Mapping(target = "latitude", expression = "java(report.getLocation().getY())")
     @Mapping(target = "longitude", expression = "java(report.getLocation().getX())")
-    @Mapping(target = "status", expression = "java(report.getStatus().getPolishName())")
+    @Mapping(target = "status", expression = "java(report.getStatus())")
     ReportResponseDto toDto(Report report);
 
     // Latitude / longitude mapping to Point
