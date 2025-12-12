@@ -13,18 +13,19 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/reports")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ReportController {
 
     private final ReportService reportService;
 
     @PostMapping
-    public ResponseEntity<ReportResponseDto> createReport(@RequestBody @Valid ReportRequestDto request){
+    public ResponseEntity<ReportResponseDto> createReport(@ModelAttribute ReportRequestDto request){
         ReportResponseDto response = reportService.createReport(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping()
-    public ResponseEntity<List<ReportResponseDto>> getAllReports(@RequestBody @Valid ReportSearchRequestDto request) {
+    public ResponseEntity<List<ReportResponseDto>> getAllReports(@ModelAttribute ReportSearchRequestDto request) {
         return ResponseEntity.ok(reportService.getReports(request));
     }
 

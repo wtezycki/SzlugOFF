@@ -5,8 +5,8 @@ Aplikacja umożliwia oznaczanie zdarzeń na mapie w czasie rzeczywistym.
 
 ## 🛠 Tech Stack
 
-* **Język:** Java 21
-* **Framework:** Spring Boot 3.x
+* **Język:** Java 17
+* **Framework:** Spring Boot 4.0
 * **Baza danych:** PostgreSQL 16
 * **GIS (Mapy):** PostGIS + Hibernate Spatial
 * **Konteneryzacja:** Docker & Docker Compose
