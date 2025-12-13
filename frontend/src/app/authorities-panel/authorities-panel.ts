@@ -138,21 +138,14 @@ export class AdminPanelComponent implements OnInit {
   changeStatus(report: Report, newStatus: string): void {
     const oldStatus = report.status;
 
-    // 1. Optymistyczna aktualizacja widoku (natychmiastowa reakcja UI)
     report.status = newStatus as ReportStatus;
     this.cdr.detectChanges();
 
-    // Wywołanie serwisu
-    // UWAGA: Upewnij się, że w ReportService metoda nazywa się updateReportStatus (jak w poprzednim kroku) 
-    // lub zmień tutaj na this.reportService.updateStatus jeśli tak ją nazwałeś.
     this.reportService.updateStatus(report.id, newStatus as ReportStatus).subscribe({
       next: (updatedReport) => {
-        // Potwierdzenie z backendu
-        report.status = updatedReport.status; // upewniamy się, że mamy status z bazy
+        report.status = updatedReport.status;
         this.cdr.detectChanges();
 
-        // --- SUKCES (Zielony Toast) ---
-        // Używamy statusLabels, żeby wyświetlić ładną nazwę np. "W trakcie" zamiast "IN_PROGRESS"
         this.toastr.success(
           `Status zmieniono na: ${this.statusLabels[newStatus]}`, 
           'Zaktualizowano'
@@ -161,13 +154,11 @@ export class AdminPanelComponent implements OnInit {
       error: (err) => {
         console.error(err);
         
-        // --- BŁĄD (Czerwony Toast) ---
         this.toastr.error(
           'Nie udało się zapisać zmiany statusu.', 
           'Błąd serwera'
         );
 
-        // Cofnij zmianę wizualną w przypadku błędu
         report.status = oldStatus;
         this.cdr.detectChanges();
       }

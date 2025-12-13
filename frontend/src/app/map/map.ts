@@ -5,11 +5,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, RouterLink],
+  imports: [HttpClientModule, CommonModule, RouterLink, FormsModule],
   templateUrl: './map.html',
   styleUrl: './map.scss'
 })
@@ -21,6 +22,16 @@ export class MapComponent implements AfterViewInit {
     'CONFIRMED': 'Potwierdzone',
     'REJECTED': 'Odrzucone'
   };
+
+  public eventTypes: string[] = [
+    'Palenie w miejscu niedozwolonym',
+    'Spożywanie alkoholu w miejscu publicznym',
+    'Kradzież',
+    'Hałas',
+    'Parkowanie w miejscu niedozwolonym',
+    'Inne'
+  ];
+  public selectedEvent: string = this.eventTypes[0];
 
   private map: L.Map | undefined;
   private markers: L.LayerGroup = L.layerGroup();
@@ -144,22 +155,30 @@ export class MapComponent implements AfterViewInit {
   }
 
 
-  public reportAtCenter(description: string): void {
-    if (!this.map || !description.trim()) {
-        this.toastr.warning("Musisz wpisać opis zdarzenia.", "Brak opisu");
+  public reportAtCenter(): void {
+    if (!this.map) return;
+
+    if (!this.selectedEvent) {
+        this.toastr.warning("Wybierz rodzaj zdarzenia!", "Brak wyboru");
         return;
     }
+
     const center = this.map.getCenter();
     const newReport: ReportRequest = {
-      latitude: center.lat, longitude: center.lng, description: description
+      latitude: center.lat, 
+      longitude: center.lng, 
+      description: this.selectedEvent
     };
 
     this.reportService.createReport(newReport).subscribe({
       next: () => {
-        this.toastr.success("Zgłoszono pomyślnie.", "Sukces");
+        this.toastr.success(`Zgłoszono: ${this.selectedEvent}`, "Sukces 🚬");
         this.loadReports();
       },
-      error: (err) => { console.error(err); this.toastr.error("Nie udało się wysłać zgłoszenia.", "Błąd serwera"); }
+      error: (err) => { 
+        console.error(err); 
+        this.toastr.error("Nie udało się wysłać zgłoszenia.", "Błąd serwera");
+      }
     });
   }
 
