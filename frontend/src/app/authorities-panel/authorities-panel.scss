@@ -1,0 +1,108 @@
+.admin-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+
+header h1 {
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.filters {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  
+  h3 { margin-top: 0; font-size: 1rem; }
+  
+  .checkbox-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    
+    label { cursor: pointer; user-select: none; }
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th { background-color: #f1f1f1; }
+}
+
+.badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-action {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-size: 0.8rem;
+  transition: opacity 0.2s;
+  
+  &:hover { opacity: 0.8; }
+}
+
+.btn-start { background-color: #007bff; }
+.btn-confirm { background-color: #28a745; }
+.btn-reject { background-color: #dc3545; }
+.text-muted { color: #6c757d; font-style: italic; }
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    color: #333;
+  }
+
+  .btn-back {
+    text-decoration: none;
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &:hover {
+      background-color: #5a6268;
+    }
+  }
+}

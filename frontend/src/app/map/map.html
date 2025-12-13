@@ -1,3 +1,10 @@
+<header class="map-header">
+  <div class="header-content">
+    <h1>🚬 SzlugOFF</h1>
+    <a routerLink="/authorities" class="btn-admin">👮‍♂️ Panel</a>
+  </div>
+</header>
+
 <div class="map-container" id="map"></div>
 
 <div class="center-target">
@@ -5,8 +12,11 @@
 </div>
 
 <div class="bottom-panel">
-  <h3>🚬 Zgłoś Zdarzenie</h3>
-
+  <h3>🚬 Zgłoś Palacza</h3>
+  <div class="coordinates">
+    {{ currentCenter?.lat | number:'1.4-4' }}, {{ currentCenter?.lng | number:'1.4-4' }}
+  </div>
+  
   <div class="form-row">
     <input #descInput type="text" placeholder="Opis (np. Przystanek Centrum)" />
     <button (click)="reportAtCenter(descInput.value); descInput.value = ''">

@@ -3,11 +3,12 @@ import * as L from 'leaflet';
 import { ReportService, ReportRequest, Report } from '../report';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [HttpClientModule, CommonModule],
+  imports: [HttpClientModule, CommonModule, RouterLink],
   templateUrl: './map.html',
   styleUrl: './map.scss'
 })

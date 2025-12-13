@@ -1,0 +1,65 @@
+<div class="admin-container">
+  <header>
+    <h1>Panel Dyspozytora</h1>
+    <a routerLink="/" class="btn-back"> Wróć do Mapy</a>
+  </header>
+
+  <div class="filters">
+    <h3>Filtruj widok:</h3>
+    <div class="checkbox-group">
+      @for (status of availableStatuses; track status) {
+        <label>
+          <input type="checkbox" 
+                 [(ngModel)]="selectedStatuses[status]" 
+                 (change)="loadAdminReports()">
+          {{ statusLabels[status] }}
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Opis</th>
+          <th>Status</th>
+          <th>Akcje</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (report of reports; track report.id) {
+          <tr>
+            <td>{{ report.createdAt | date:'short' }}</td>
+            <td>{{ report.description }}</td>
+            <td>
+              <span class="badge" [style.background-color]="getStatusColor(report.status)">
+                {{ statusLabels[report.status] }}
+              </span>
+            </td>
+            <td class="actions">
+              @if (report.status === 'NEW') {
+                <button class="btn btn-start" (click)="changeStatus(report, 'IN_PROGRESS')">Przyjmij</button>
+                <button class="btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Odrzuć</button>
+              }
+              @if (report.status === 'IN_PROGRESS') {
+                <button class="btn btn-confirm" (click)="changeStatus(report, 'CONFIRMED')">Potwierdź</button>
+                <button class="btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Fałszywy</button>
+              }
+              @if (report.status === 'CONFIRMED' || report.status === 'REJECTED') {
+                <span class="text-muted">Zakończone</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" style="text-align:center; padding: 20px; color: #666;">
+              Brak zgłoszeń dla wybranych filtrów.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
