@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 public enum ReportStatus {
     NEW,
+    ACTIVE,
     CONFIRMED,
     REJECTED,
     IN_PROGRESS;

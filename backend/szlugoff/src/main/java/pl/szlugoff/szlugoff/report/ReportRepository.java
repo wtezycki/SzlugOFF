@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, UUID> {
-    // Find active reports in radius
+    // For authorities
     @Query(value = """
         SELECT * FROM reports r 
         WHERE ST_DWithin(
@@ -19,7 +19,24 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, 
             :radius
         ) 
-        AND r.status = 'NEW'
+        AND r.status IN (:statuses)
+        """, nativeQuery = true)
+    List<Report> findReportsAroundWithStatus(
+            @Param("lat") double lat,
+            @Param("lon") double lon,
+            @Param("radius") double radius,
+            @Param("statuses") List<String> statuses
+    );
+
+    // For authorities
+    @Query(value = """
+        SELECT * FROM reports r 
+        WHERE ST_DWithin(
+            r.location::geography, 
+            ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, 
+            :radius
+        ) 
+        AND r.status IN (:statuses)
         """, nativeQuery = true)
     List<Report> findReportsAround(
             @Param("lat") double lat,

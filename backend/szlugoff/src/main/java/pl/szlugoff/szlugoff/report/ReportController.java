@@ -9,6 +9,7 @@ import pl.szlugoff.szlugoff.report.dto.ReportResponseDto;
 import pl.szlugoff.szlugoff.report.dto.ReportSearchRequestDto;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/reports")
@@ -34,5 +35,19 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllReports());
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ReportResponseDto> updateReportStatus(@PathVariable("id") UUID id,
+                                                                @RequestParam ReportStatus status) {
+        ReportResponseDto updatedReport = reportService.updateReportStatus(id, status);
+        return ResponseEntity.ok(updatedReport);
+    }
 
+
+    @GetMapping("/authorities")
+    public ResponseEntity<List<ReportResponseDto>> getAuthoritiesReports(@ModelAttribute ReportSearchRequestDto request,
+                                                                         @RequestParam(required = false) List<ReportStatus> statuses) {
+        return ResponseEntity.ok(reportService.getReportsForAuthority(
+                request, statuses
+        ));
+    }
 }
