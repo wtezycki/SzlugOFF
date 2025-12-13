@@ -5,11 +5,8 @@
 </div>
 
 <div class="bottom-panel">
-  <h3>🚬 Zgłoś Palacza</h3>
-  <div class="coordinates">
-    {{ currentCenter?.lat | number:'1.4-4' }}, {{ currentCenter?.lng | number:'1.4-4' }}
-  </div>
-  
+  <h3>🚬 Zgłoś Zdarzenie</h3>
+
   <div class="form-row">
     <input #descInput type="text" placeholder="Opis (np. Przystanek Centrum)" />
     <button (click)="reportAtCenter(descInput.value); descInput.value = ''">
