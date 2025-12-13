@@ -12,4 +12,4 @@ public record ReportResponseDto(
         ReportStatus status,
         LocalDateTime createdAt,
         String description
-) {}    
+) {}

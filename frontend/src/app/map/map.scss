@@ -1,5 +1,72 @@
-.map-container {
-  height: 100vh;
-  width: 100%;
+:host {
   display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.center-target {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  z-index: 500; 
+  pointer-events: none;
+  
+  img {
+    height: 41px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  }
+}
+
+.bottom-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  padding: 20px;
+  border-radius: 15px 15px 0 0;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+  box-sizing: border-box;
+
+  h3 { margin: 0 0 5px 0; color: #333; }
+  
+  .coordinates {
+    font-family: monospace;
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 10px;
+
+    input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover { background: #c82333; }
+    }
+  }
 }
