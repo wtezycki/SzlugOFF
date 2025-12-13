@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import * as L from 'leaflet';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-panel',
@@ -37,7 +38,8 @@ export class AdminPanelComponent implements OnInit {
 
   constructor(
     private reportService: ReportService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService
   ) {}
 
   adminLat = 52.2319;
@@ -136,17 +138,36 @@ export class AdminPanelComponent implements OnInit {
   changeStatus(report: Report, newStatus: string): void {
     const oldStatus = report.status;
 
+    // 1. Optymistyczna aktualizacja widoku (natychmiastowa reakcja UI)
     report.status = newStatus as ReportStatus;
     this.cdr.detectChanges();
 
+    // Wywołanie serwisu
+    // UWAGA: Upewnij się, że w ReportService metoda nazywa się updateReportStatus (jak w poprzednim kroku) 
+    // lub zmień tutaj na this.reportService.updateStatus jeśli tak ją nazwałeś.
     this.reportService.updateStatus(report.id, newStatus as ReportStatus).subscribe({
       next: (updatedReport) => {
-        report.status = updatedReport.status;
+        // Potwierdzenie z backendu
+        report.status = updatedReport.status; // upewniamy się, że mamy status z bazy
         this.cdr.detectChanges();
 
+        // --- SUKCES (Zielony Toast) ---
+        // Używamy statusLabels, żeby wyświetlić ładną nazwę np. "W trakcie" zamiast "IN_PROGRESS"
+        this.toastr.success(
+          `Status zmieniono na: ${this.statusLabels[newStatus]}`, 
+          'Zaktualizowano'
+        );
       },
-      error: () => {
-        alert('Błąd: Nie udało się zmienić statusu w bazie.');
+      error: (err) => {
+        console.error(err);
+        
+        // --- BŁĄD (Czerwony Toast) ---
+        this.toastr.error(
+          'Nie udało się zapisać zmiany statusu.', 
+          'Błąd serwera'
+        );
+
+        // Cofnij zmianę wizualną w przypadku błędu
         report.status = oldStatus;
         this.cdr.detectChanges();
       }

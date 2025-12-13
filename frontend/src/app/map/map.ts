@@ -4,6 +4,7 @@ import { ReportService, ReportRequest, Report } from '../report';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-map',
@@ -28,7 +29,8 @@ export class MapComponent implements AfterViewInit {
 
   constructor(
     private reportService: ReportService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService
   ) {}
 
   ngAfterViewInit(): void {
@@ -47,6 +49,7 @@ export class MapComponent implements AfterViewInit {
         },
         (error) => {
           console.warn("Brak lokalizacji:", error.message);
+          this.toastr.info("Nie udało się pobrać lokalizacji");
           this.initMap(defaultLat, defaultLng);
         }
       );
@@ -143,7 +146,7 @@ export class MapComponent implements AfterViewInit {
 
   public reportAtCenter(description: string): void {
     if (!this.map || !description.trim()) {
-        alert("Wpisz opis!");
+        this.toastr.warning("Musisz wpisać opis zdarzenia.", "Brak opisu");
         return;
     }
     const center = this.map.getCenter();
@@ -153,10 +156,10 @@ export class MapComponent implements AfterViewInit {
 
     this.reportService.createReport(newReport).subscribe({
       next: () => {
-        alert("Zgłoszono pomyślnie! 🚬");
+        this.toastr.success("Zgłoszono pomyślnie.", "Sukces");
         this.loadReports();
       },
-      error: (err) => { console.error(err); alert("Błąd serwera!"); }
+      error: (err) => { console.error(err); this.toastr.error("Nie udało się wysłać zgłoszenia.", "Błąd serwera"); }
     });
   }
 
