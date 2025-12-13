@@ -1,5 +1,21 @@
+/* styles.scss */
 @import "leaflet/dist/leaflet.css";
 @import "ngx-toastr/toastr";
+
+// Definicja zmiennych kolorystycznych dla spójnego wyglądu
+:root {
+  --primary-color: #0056b3; // Głęboki niebieski
+  --primary-hover: #004494;
+  --text-dark: #1a1a1a;
+  --text-muted: #666666;
+  --bg-light: #f8f9fa; // Bardzo jasne szare tło
+  --bg-white: #ffffff;
+  --border-color: #e9ecef;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+}
 
 html, body {
   height: 100%;
@@ -7,5 +23,24 @@ html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  // Nowoczesny stos fontów systemowych
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+// Prosty reset dla nagłówków
+h1, h2, h3, h4 {
+  margin-top: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--text-muted);
 }

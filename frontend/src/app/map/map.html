@@ -1,28 +1,57 @@
-<header class="map-header">
-  <div class="header-content">
-    <h1>🚬 SzlugOFF</h1>
-    <a routerLink="/authorities" class="btn-admin">👮‍♂️ Panel</a>
-  </div>
-</header>
+<div class="dashboard-container">
 
-<div class="map-container" id="map"></div>
+  <section class="side-panel">
 
-<div class="center-target">
-  <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" alt="Celownik" style="height: 40px;" />
-</div>
+            <div class="admin-access-container">
+      <a routerLink="/authorities" class="admin-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <rect x="11" y="9" width="2" height="2"></rect> </svg>
+        <span>Panel Służb</span>
+      </a>
+    </div>
 
-<div class="bottom-panel">
-  <h3>Zgłoś Zdarzenie</h3>
+    <div class="card hero-card">
+      <h1>SzlugOFF</h1>
+      <h3>System Zgłaszania Naruszeń</h3>
+      <p class="subtitle">
+        Pomóż nam dbać o wspólną przestrzeń. Anonimowo zgłaszaj miejsca, w których łamania prawa lub zakłóceniu porządku publicznego. Twoje zgłoszenie pomoże odpowiednim służbom w monitorowaniu stref wolnych od przęstępstw i wykroczeń.
+      </p>
+    </div>
 
-  <div class="form-row">
-    <select [(ngModel)]="selectedEvent" class="event-select">
-      <option *ngFor="let type of eventTypes" [value]="type">
-        {{ type }}
-      </option>
-    </select>
+    <div class="card form-card">
+      <h3>Nowe Zgłoszenie</h3>
+      <p class="form-instruction">Wybierz rodzaj zaobserwowanego zdarzenia. Lokalizacja zostanie pobrana ze środka mapy.</p>
 
-    <button (click)="reportAtCenter()">
-      ZGŁOŚ TERAZ
-    </button>
-  </div>
+      <div class="form-group">
+        <label for="eventType">Rodzaj zdarzenia</label>
+        <div class="select-wrapper">
+          <select id="eventType" [(ngModel)]="selectedEvent" class="modern-select">
+            <option *ngFor="let type of eventTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+          <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+
+      <button class="submit-btn" (click)="reportAtCenter()">
+        Wyślij Zgłoszenie
+      </button>
+    </div>
+  </section>
+
+  <section class="map-panel">
+    <div class="card map-card">
+      <div id="map" class="map-container"></div>
+      <div class="center-target">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+      </div>
+    </div>
+  </section>
+
 </div>

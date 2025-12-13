@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReportService, Report, ReportStatus } from '../report';
 import { HttpClientModule } from '@angular/common/http';
@@ -14,21 +14,22 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './authorities-panel.html',
   styleUrl: './authorities-panel.scss'
 })
-export class AdminPanelComponent implements OnInit {
+export class AdminPanelComponent implements OnInit, AfterViewInit {
 
   reports: Report[] = [];
   availableStatuses = Object.values(ReportStatus);
   
+  // Etykiety bez emotek
   statusLabels: { [key: string]: string } = {
     [ReportStatus.NEW]: 'Nowe',
-    [ReportStatus.IN_PROGRESS]: 'W trakcie',
-    [ReportStatus.CONFIRMED]: 'Potwierdzone',
+    [ReportStatus.IN_PROGRESS]: 'W toku',
+    [ReportStatus.CONFIRMED]: 'Zatwierdzone',
     [ReportStatus.REJECTED]: 'Odrzucone'
   };
 
   selectedStatuses: { [key: string]: boolean } = {
     [ReportStatus.NEW]: true,
-    [ReportStatus.IN_PROGRESS]: false,
+    [ReportStatus.IN_PROGRESS]: true, // Domyślnie pokaż też te w toku
     [ReportStatus.CONFIRMED]: false,
     [ReportStatus.REJECTED]: false
   };
@@ -36,15 +37,16 @@ export class AdminPanelComponent implements OnInit {
   private map: L.Map | undefined;
   private markersLayer: L.LayerGroup = L.layerGroup();
 
+  // Domyślna lokalizacja (np. centrum Warszawy)
+  adminLat = 52.2319;
+  adminLng = 21.0067; 
+  adminRadius = 50000; // Duży promień dla admina
+
   constructor(
     private reportService: ReportService,
     private cdr: ChangeDetectorRef,
     private toastr: ToastrService
   ) {}
-
-  adminLat = 52.2319;
-  adminLng = 21.0067; 
-  adminRadius = 50000;
 
   ngOnInit(): void {
     if (navigator.geolocation) {
@@ -52,15 +54,13 @@ export class AdminPanelComponent implements OnInit {
         (position) => {
           this.adminLat = position.coords.latitude;
           this.adminLng = position.coords.longitude;
-          console.log(`Zlokalizowano administratora: ${this.adminLat}, ${this.adminLng}`);
-
           if (this.map) {
-            this.map.setView([this.adminLat, this.adminLng], 13);
+            this.map.setView([this.adminLat, this.adminLng], 12);
           }
           this.loadAdminReports();
         },
         (error) => {
-          console.warn('Brak dostępu do lokalizacji (używam domyślnej):', error);
+          console.warn('Lokalizacja niedostępna:', error);
           this.loadAdminReports();
         }
       );
@@ -73,7 +73,14 @@ export class AdminPanelComponent implements OnInit {
     this.initMap();
   }
 
+  // Metoda do obsługi filtrów (toggle chip)
+  toggleStatus(status: string): void {
+    this.selectedStatuses[status] = !this.selectedStatuses[status];
+    this.loadAdminReports();
+  }
+
   private initMap(): void {
+    // Inicjalizacja mapy w kontenerze 'admin-map'
     this.map = L.map('admin-map').setView([this.adminLat, this.adminLng], 12);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -101,7 +108,10 @@ export class AdminPanelComponent implements OnInit {
           this.cdr.detectChanges(); 
           this.updateMapMarkers(); 
         },
-        error: (err) => console.error(err)
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Nie udało się pobrać listy zgłoszeń.', 'Błąd');
+        }
       });
   }
 
@@ -112,66 +122,76 @@ export class AdminPanelComponent implements OnInit {
     this.reports.forEach(r => {
       const colorIcon = this.getIconForStatus(r.status);
       
-      L.marker([r.latitude, r.longitude], { icon: colorIcon })
-        .bindPopup(`<b>${r.description}</b><br>${this.statusLabels[r.status]}`)
-        .addTo(this.markersLayer);
+      const marker = L.marker([r.latitude, r.longitude], { icon: colorIcon })
+        .bindPopup(`
+          <div style="font-family: sans-serif; font-size: 14px;">
+            <strong>${r.description}</strong><br>
+            <span style="color: #666;">${this.statusLabels[r.status]}</span><br>
+            <small>${new Date(r.createdAt).toLocaleString()}</small>
+          </div>
+        `);
+        
+      marker.addTo(this.markersLayer);
+      
+      // Dodajemy referencję do markera w obiekcie raportu (opcjonalne, ale pomocne przy flyTo)
+      // (W prostym podejściu po prostu latamy po koordynatach)
     });
   }
 
   flyToReport(report: Report): void {
-    this.map?.flyTo([report.latitude, report.longitude], 16);
+    // Przesuń mapę i zbliż
+    this.map?.flyTo([report.latitude, report.longitude], 16, {
+      duration: 1.5 // Wolniejsza, płynniejsza animacja
+    });
+    
+    // Opcjonalnie: Otwórz popup markera (wymagałoby przechowywania referencji do markerów)
   }
 
+  // Generowanie ikon w zależności od statusu
   private getIconForStatus(status: string): L.Icon {
-    let color = 'blue';
-    if (status === 'IN_PROGRESS') color = 'orange';
-    if (status === 'CONFIRMED') color = 'green';
-    if (status === 'REJECTED') color = 'red';
+    let colorUrlPart = 'blue'; // Domyślnie NEW
+    
+    if (status === 'IN_PROGRESS') colorUrlPart = 'orange';
+    if (status === 'CONFIRMED') colorUrlPart = 'green';
+    if (status === 'REJECTED') colorUrlPart = 'red';
 
     return L.icon({
-      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${colorUrlPart}.png`,
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+      iconSize: [25, 41], 
+      iconAnchor: [12, 41], 
+      popupAnchor: [1, -34], 
+      shadowSize: [41, 41]
     });
   }
 
   changeStatus(report: Report, newStatus: string): void {
     const oldStatus = report.status;
+    const previousStatusLabel = this.statusLabels[oldStatus];
+    const newStatusLabel = this.statusLabels[newStatus];
 
+    // Optymistyczna aktualizacja UI
     report.status = newStatus as ReportStatus;
     this.cdr.detectChanges();
 
     this.reportService.updateStatus(report.id, newStatus as ReportStatus).subscribe({
       next: (updatedReport) => {
         report.status = updatedReport.status;
+        this.updateMapMarkers(); // Odśwież kolor markera na mapie
         this.cdr.detectChanges();
-
+        
         this.toastr.success(
-          `Status zmieniono na: ${this.statusLabels[newStatus]}`, 
-          'Zaktualizowano'
+          `Status zmieniony: ${previousStatusLabel} -> ${newStatusLabel}`,
+          'Aktualizacja pomyślna'
         );
       },
-      error: (err) => {
-        console.error(err);
-        
-        this.toastr.error(
-          'Nie udało się zapisać zmiany statusu.', 
-          'Błąd serwera'
-        );
-
+      error: () => {
+        // Rollback
         report.status = oldStatus;
+        this.updateMapMarkers();
         this.cdr.detectChanges();
+        this.toastr.error('Wystąpił błąd podczas zmiany statusu.', 'Błąd');
       }
     });
-  }
-
-  getStatusColor(status: string): string {
-    switch(status) {
-      case ReportStatus.NEW: return '#007bff';
-      case ReportStatus.IN_PROGRESS: return '#fd7e14';
-      case ReportStatus.CONFIRMED: return '#28a745';
-      case ReportStatus.REJECTED: return '#dc3545';
-      default: return '#6c757d';
-    }
   }
 }

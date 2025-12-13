@@ -4,5 +4,6 @@ import { AdminPanelComponent } from './authorities-panel/authorities-panel';
 
 export const routes: Routes = [
   { path: '', component: MapComponent },
-  { path: 'authorities', component: AdminPanelComponent }
-];
+  { path: 'authorities', component: AdminPanelComponent },
+  { path: '**', redirectTo: '' }
+]; 

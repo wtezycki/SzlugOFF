@@ -1,71 +1,70 @@
 <div class="admin-container">
-  <header>
-    <h1>👮Panel Dyspozytora</h1>
-    <a routerLink="/" class="btn-back">⬅ Wróć do Mapy</a>
-  </header>
+  
+  <aside class="sidebar-panel">
+    
+    <header class="panel-header">
+      <a routerLink="/" class="back-btn" title="Wróć do strony głównej">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <div class="header-text">
+        <h2>Panel Zarządzania</h2>
+        <p class="subtitle">Przegląd zgłoszeń</p>
+      </div>
+    </header>
 
-  <div class="filters">
-    <h3>Filtruj widok:</h3>
-    <div class="checkbox-group">
-      @for (status of availableStatuses; track status) {
-        <label>
-          <input type="checkbox" 
-                 [(ngModel)]="selectedStatuses[status]" 
-                 (change)="loadAdminReports()">
-          {{ statusLabels[status] }}
-        </label>
+    <section class="filters-section">
+      <label class="filter-label">Filtruj status:</label>
+      <div class="filter-chips">
+        <button class="chip new" [class.active]="selectedStatuses['NEW']" (click)="toggleStatus('NEW')">Nowe</button>
+        <button class="chip progress" [class.active]="selectedStatuses['IN_PROGRESS']" (click)="toggleStatus('IN_PROGRESS')">W toku</button>
+        <button class="chip confirmed" [class.active]="selectedStatuses['CONFIRMED']" (click)="toggleStatus('CONFIRMED')">Zatwierdzone</button>
+        <button class="chip rejected" [class.active]="selectedStatuses['REJECTED']" (click)="toggleStatus('REJECTED')">Odrzucone</button>
+      </div>
+    </section>
+
+    <div class="reports-list-container">
+      @if (reports.length === 0) {
+        <div class="empty-state">
+          <p>Brak zgłoszeń spełniających kryteria.</p>
+        </div>
+      } @else {
+        <div class="report-item" *ngFor="let report of reports" (click)="flyToReport(report)">
+          
+          <div class="report-header">
+            <span class="badge" [ngClass]="report.status.toLowerCase()">
+              {{ statusLabels[report.status] }}
+            </span>
+            <span class="report-date">{{ report.createdAt | date:'dd.MM, HH:mm' }}</span>
+          </div>
+
+          <div class="report-content">
+            <h4>{{ report.description }}</h4>
+            <p class="coords">Lat: {{ report.latitude | number:'1.4-4' }}, Lng: {{ report.longitude | number:'1.4-4' }}</p>
+          </div>
+
+          <div class="report-actions" (click)="$event.stopPropagation()">
+            <button *ngIf="report.status === 'NEW'" class="action-btn btn-progress" (click)="changeStatus(report, 'IN_PROGRESS')">Rozpocznij</button>
+            <button *ngIf="report.status === 'NEW'" class="action-btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Odrzuć</button>
+
+            <button *ngIf="report.status === 'IN_PROGRESS'" class="action-btn btn-confirm" (click)="changeStatus(report, 'CONFIRMED')">Zatwierdź</button>
+            <button *ngIf="report.status === 'IN_PROGRESS'" class="action-btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Odrzuć</button>
+
+            <span *ngIf="report.status === 'CONFIRMED'" class="status-text success">✓ Zamknięte</span>
+            <span *ngIf="report.status === 'REJECTED'" class="status-text danger">✕ Odrzucone</span>
+          </div>
+
+        </div>
       }
     </div>
-  </div>
+  </aside>
 
-  <div class="content-split">
-    
-    <div class="table-section">
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Opis</th>
-              <th>Status</th>
-              <th>Akcje</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (report of reports; track report.id) {
-              <tr (click)="flyToReport(report)" style="cursor: pointer">
-                <td>{{ report.createdAt | date:'shortTime' }}</td>
-                <td>{{ report.description }}</td>
-                <td>
-                  <span class="badge" [style.background-color]="getStatusColor(report.status)">
-                    {{ statusLabels[report.status] }}
-                  </span>
-                </td>
-                <td class="actions" (click)="$event.stopPropagation()">
-                  @if (report.status === 'NEW') {
-                    <button class="btn btn-start" (click)="changeStatus(report, 'IN_PROGRESS')">Potwierdź</button>
-                    <button class="btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Odrzuć</button>
-                  }
-                  @if (report.status === 'IN_PROGRESS') {
-                    <button class="btn btn-confirm" (click)="changeStatus(report, 'CONFIRMED')">Potwierdź</button>
-                    <button class="btn btn-reject" (click)="changeStatus(report, 'REJECTED')">Odrzuć</button>
-                  }
-                  @if (report.status === 'CONFIRMED' || report.status === 'REJECTED') {
-                    <span class="text-muted">-</span>
-                  }
-                </td>
-              </tr>
-            } @empty {
-              <tr><td colspan="4">Brak zgłoszeń.</td></tr>
-            }
-          </tbody>
-        </table>
-      </div>
+  <main class="map-panel">
+    <div class="map-card">
+      <div id="admin-map" class="map-container"></div>
     </div>
+  </main>
 
-    <div class="map-section">
-      <div id="admin-map"></div>
-    </div>
-    
-  </div>
 </div>
