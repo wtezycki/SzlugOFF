@@ -19,7 +19,6 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
   reports: Report[] = [];
   availableStatuses = Object.values(ReportStatus);
   
-  // Etykiety bez emotek
   statusLabels: { [key: string]: string } = {
     [ReportStatus.NEW]: 'Nowe',
     [ReportStatus.IN_PROGRESS]: 'W toku',
@@ -29,7 +28,7 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
 
   selectedStatuses: { [key: string]: boolean } = {
     [ReportStatus.NEW]: true,
-    [ReportStatus.IN_PROGRESS]: true, // Domyślnie pokaż też te w toku
+    [ReportStatus.IN_PROGRESS]: true,
     [ReportStatus.CONFIRMED]: false,
     [ReportStatus.REJECTED]: false
   };
@@ -37,10 +36,9 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
   private map: L.Map | undefined;
   private markersLayer: L.LayerGroup = L.layerGroup();
 
-  // Domyślna lokalizacja (np. centrum Warszawy)
   adminLat = 52.2319;
   adminLng = 21.0067; 
-  adminRadius = 50000; // Duży promień dla admina
+  adminRadius = 50000;
 
   constructor(
     private reportService: ReportService,
@@ -73,14 +71,12 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
     this.initMap();
   }
 
-  // Metoda do obsługi filtrów (toggle chip)
   toggleStatus(status: string): void {
     this.selectedStatuses[status] = !this.selectedStatuses[status];
     this.loadAdminReports();
   }
 
   private initMap(): void {
-    // Inicjalizacja mapy w kontenerze 'admin-map'
     this.map = L.map('admin-map').setView([this.adminLat, this.adminLng], 12);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -133,23 +129,18 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
         
       marker.addTo(this.markersLayer);
       
-      // Dodajemy referencję do markera w obiekcie raportu (opcjonalne, ale pomocne przy flyTo)
-      // (W prostym podejściu po prostu latamy po koordynatach)
     });
   }
 
   flyToReport(report: Report): void {
-    // Przesuń mapę i zbliż
     this.map?.flyTo([report.latitude, report.longitude], 16, {
-      duration: 1.5 // Wolniejsza, płynniejsza animacja
+      duration: 1.5
     });
     
-    // Opcjonalnie: Otwórz popup markera (wymagałoby przechowywania referencji do markerów)
   }
 
-  // Generowanie ikon w zależności od statusu
   private getIconForStatus(status: string): L.Icon {
-    let colorUrlPart = 'blue'; // Domyślnie NEW
+    let colorUrlPart = 'blue';
     
     if (status === 'IN_PROGRESS') colorUrlPart = 'orange';
     if (status === 'CONFIRMED') colorUrlPart = 'green';
@@ -170,14 +161,13 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
     const previousStatusLabel = this.statusLabels[oldStatus];
     const newStatusLabel = this.statusLabels[newStatus];
 
-    // Optymistyczna aktualizacja UI
     report.status = newStatus as ReportStatus;
     this.cdr.detectChanges();
 
     this.reportService.updateStatus(report.id, newStatus as ReportStatus).subscribe({
       next: (updatedReport) => {
         report.status = updatedReport.status;
-        this.updateMapMarkers(); // Odśwież kolor markera na mapie
+        this.updateMapMarkers();
         this.cdr.detectChanges();
         
         this.toastr.success(
@@ -186,7 +176,6 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
         );
       },
       error: () => {
-        // Rollback
         report.status = oldStatus;
         this.updateMapMarkers();
         this.cdr.detectChanges();

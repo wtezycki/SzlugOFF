@@ -1,20 +1,16 @@
 .dashboard-container {
   display: grid;
-  grid-template-columns: 1fr; // Domyślnie (mobile) jedna kolumna
+  grid-template-columns: 1fr;
   gap: 2rem;
   padding: 1.5rem;
-  min-height: 100vh; // Zajmij co najmniej całą wysokość ekranu
-
-  // Na tabletach i desktopach (powyżej 768px)
+  min-height: 100vh;
   @media (min-width: 768px) {
-    // Układ dwukolumnowy: lewa kolumna węższa (400px), prawa zajmuje resztę
     grid-template-columns: 400px 1fr;
     padding: 2rem 4rem;
-    align-items: start; // Karty wyrównane do góry
+    align-items: start;
   }
 }
 
-// --- Style Kart ---
 .card {
   background: var(--bg-white);
   border-radius: var(--border-radius-lg);
@@ -28,7 +24,6 @@
   }
 }
 
-// --- Lewy Panel (Hero i Formularz) ---
 .side-panel {
   display: flex;
   flex-direction: column;
@@ -57,7 +52,6 @@
   }
 }
 
-// --- Stylizacja Formularza ---
 .form-group {
   margin-bottom: 1.5rem;
 
@@ -75,7 +69,6 @@
   display: flex;
   align-items: center;
 
-  // Nowoczesny select
   .modern-select {
     width: 100%;
     padding: 14px 16px;
@@ -83,7 +76,7 @@
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: var(--bg-light);
-    appearance: none; // Ukrywa domyślną strzałkę systemową
+    appearance: none;
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text-dark);
@@ -96,11 +89,10 @@
     }
   }
 
-  // Własna ikona strzałki SVG
   .select-arrow {
     position: absolute;
     right: 16px;
-    pointer-events: none; // Kliknięcie przenika do selecta
+    pointer-events: none;
     color: var(--text-muted);
   }
 }
@@ -125,18 +117,14 @@
   }
 }
 
-
-// --- Prawy Panel (Mapa) ---
 .map-card {
-  padding: 0; // Mapa ma dotykać krawędzi karty
-  overflow: hidden; // Żeby mapa nie wystawała poza zaokrąglone rogi
+  padding: 0;
+  overflow: hidden; 
   position: relative;
-  height: 500px; // Domyślna wysokość na mobile
+  height: 500px;
 
   @media (min-width: 768px) {
-    // Na desktopie mapa jest wyższa
     height: 700px;
-    // Opcjonalnie: height: calc(100vh - 4rem); // dopasowanie do wysokości ekranu
   }
 }
 
@@ -146,26 +134,21 @@
   z-index: 1;
 }
 
-// Celownik na środku
 .center-target {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2; // Musi być nad mapą
-  pointer-events: none; // Żeby nie blokował przesuwania mapy
+  z-index: 2;
+  pointer-events: none;
   
   svg {
-    // Opcjonalnie: dodanie lekkiego cienia pod celownikiem dla lepszej widoczności
     filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.8));
   }
 }
 
-// ... reszta stylów ...
-
-// Kontener linku admina
 .admin-access-container {
-  margin-top: 1rem; // Odstęp od karty formularza
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
 }
@@ -176,22 +159,20 @@
   gap: 8px;
   text-decoration: none;
   font-size: 0.85rem;
-  color: var(--text-muted); // Szary kolor (zdefiniowany w styles.scss)
+  color: var(--text-muted);
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 20px;
   transition: all 0.2s ease;
   opacity: 0.7;
 
-  // Ikona
   svg {
     opacity: 0.8;
   }
 
-  // Efekt hover
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05); // Delikatne tło
-    color: var(--primary-color); // Zmiana koloru na niebieski
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--primary-color);
     opacity: 1;
     transform: translateY(-1px);
   }
@@ -201,7 +182,6 @@
   }
 }
 
-// Na mobile warto dać nieco więcej miejsca na dole
 @media (max-width: 767px) {
   .admin-access-container {
     padding-bottom: 2rem;

@@ -1,25 +1,21 @@
-// --- GŁÓWNY UKŁAD (GRID) ---
 .admin-container {
   display: grid;
-  grid-template-columns: 1fr; // Domyślnie mobilnie
-  height: 100vh;              // Sztywna wysokość ekranu
+  grid-template-columns: 1fr;
+  height: 100vh;
   width: 100vw;
-  overflow: hidden;           // Brak paska przewijania na głównej stronie
+  overflow: hidden;
   background-color: #f8f9fa;
 
-  // Desktop: Dwie kolumny
   @media (min-width: 992px) {
     grid-template-columns: 400px 1fr; 
   }
 }
 
-// --- LEWY PANEL (SIDEBAR) ---
 .sidebar-panel {
-  // Kluczowe dla rozciągania:
-  height: 100%;               // Musi mieć 100% wysokości komórki gridu
-  display: flex;              // Włączamy Flexbox
-  flex-direction: column;     // Układ pionowy elementów
-  overflow: hidden;           // Ukrywamy paski przewijania rodzica
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   
   background-color: #fff;
   border-right: 1px solid #e9ecef;
@@ -28,13 +24,11 @@
   z-index: 10;
 }
 
-// Elementy, które NIE mogą się kurczyć ani rozciągać (Nagłówek i Filtry)
 .panel-header, 
 .filters-section {
-  flex: 0 0 auto; // Sztywny rozmiar zgodny z zawartością
+  flex: 0 0 auto;
 }
 
-// --- NAGŁÓWEK ---
 .panel-header {
   padding: 1.5rem;
   border-bottom: 1px solid #e9ecef;
@@ -53,7 +47,7 @@
     background-color: #f0f2f5;
     transition: all 0.2s;
     cursor: pointer;
-    text-decoration: none; // Ważne dla linku
+    text-decoration: none;
 
     &:hover {
       background-color: #e2e6ea;
@@ -68,7 +62,6 @@
   }
 }
 
-// --- FILTRY ---
 .filters-section {
   padding: 1rem;
   background-color: #fff;
@@ -110,17 +103,16 @@
   }
 }
 
-// --- LISTA ZGŁOSZEŃ (TO SIĘ MA ROZCIĄGAĆ I SCROLLOWAĆ) ---
 .reports-list-container {
-  flex: 1 1 auto;       // 1 - rośnij, 1 - kurcz się, auto - baza
-  overflow-y: auto;     // Włącz scroll pionowy
-  height: 0px;          // Trik CSS: wymusza przeliczenie wysokości flexa
-  min-height: 0;        // Trik dla Firefoxa
+  flex: 1 1 auto;
+  overflow-y: auto;
+  height: 0px;
+  min-height: 0;
   
   padding: 1rem;
   background-color: #f8f9fa;
 
-  // Wygląd paska przewijania
+
   &::-webkit-scrollbar { width: 8px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
@@ -145,7 +137,6 @@
   }
 }
 
-// Style wewnątrz karty zgłoszenia
 .report-header {
   display: flex; justify-content: space-between; margin-bottom: 0.5rem;
   .badge {
@@ -176,19 +167,16 @@
 
 .empty-state { text-align: center; padding: 2rem; color: #666; }
 
-
-// --- PRAWY PANEL (MAPA) ---
 .map-panel {
   position: relative;
   background-color: #f8f9fa;
   
-  // ZWIĘKSZAMY PADDING: Mapa będzie miała więcej "powietrza" dookoła
   padding: 1.5rem; 
   
   height: 100%;
   overflow: hidden;
 
-  display: none; // Desktop only (chyba że zmieniasz RWD)
+  display: none;
 
   @media (min-width: 992px) {
     display: block;
@@ -202,27 +190,26 @@
 }
 .map-container { width: 100%; height: 100%; }
 
-// --- RWD (MOBILE) ---
 @media (max-width: 991px) {
   .admin-container {
-    display: block; // Wyłączamy grid
-    height: auto;   // Odblokowujemy wysokość
-    overflow: auto; // Odblokowujemy scroll strony
+    display: block;
+    height: auto;
+    overflow: auto;
   }
   .sidebar-panel {
     height: auto;
     border-right: none;
-    overflow: visible; // Niech rośnie
+    overflow: visible;
   }
   .reports-list-container {
-    height: auto; // Wyłączamy ograniczenie wysokości
+    height: auto;
     overflow-y: visible; 
   }
   .map-panel {
     display: block; 
     padding: 1rem;
     
-    // ZMNIEJSZAMY WYSOKOŚĆ NA TELEFONIE
-    height: 300px; // Było 400px lub więcej
+
+    height: 300px;
   }
 }
