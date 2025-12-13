@@ -14,6 +14,13 @@ import { RouterLink } from '@angular/router';
 })
 export class MapComponent implements AfterViewInit {
 
+  statusTranslations: { [key: string]: string } = {
+    'NEW': 'Nowe',
+    'IN_PROGRESS': 'W trakcie weryfikacji',
+    'CONFIRMED': 'Potwierdzone',
+    'REJECTED': 'Odrzucone'
+  };
+
   private map: L.Map | undefined;
   private markers: L.LayerGroup = L.layerGroup();
   
@@ -25,10 +32,31 @@ export class MapComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.initMap();
+    this.tryToLocateAndInit();
   }
 
-  private initMap(): void {
+  private tryToLocateAndInit(): void {
+    const defaultLat = 52.2319;
+    const defaultLng = 21.0067;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("Lokalizacja pobrana, startuję mapę.");
+          this.initMap(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.warn("Brak lokalizacji:", error.message);
+          this.initMap(defaultLat, defaultLng);
+        }
+      );
+    } else {
+      this.initMap(defaultLat, defaultLng);
+    }
+  }
+
+  private initMap(lat: number, lng: number): void {
+
     const iconRetinaUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png';
     const iconUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png';
     const shadowUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png';
@@ -38,7 +66,7 @@ export class MapComponent implements AfterViewInit {
       iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], tooltipAnchor: [16, -28], shadowSize: [41, 41]
     });
 
-    this.map = L.map('map').setView([52.2319, 21.0067], 13);
+    this.map = L.map('map').setView([lat, lng], 15);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 20,
@@ -46,25 +74,49 @@ export class MapComponent implements AfterViewInit {
     }).addTo(this.map);
 
     this.markers.addTo(this.map);
-
+    
     this.currentCenter = this.map.getCenter();
     this.cdr.detectChanges();
-
-    this.locateUser();
 
     this.map.on('move', () => {
       if (this.map) {
         this.currentCenter = this.map.getCenter();
-
       }
     });
 
     this.map.on('moveend', () => {
       this.loadReports();
     });
-    
+
     this.loadReports();
   }
+
+  private getIconForStatus(status: string): L.Icon {
+    let color = 'blue';
+
+    switch (status) {
+      case 'IN_PROGRESS':
+        color = 'orange';
+        break;
+      case 'CONFIRMED':
+        color = 'green';
+        break;
+      case 'REJECTED':
+        color = 'red';
+        break;
+    }
+
+    return L.icon({
+      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
+
+  
 
   private locateUser(): void {
     if (!navigator.geolocation) {
@@ -111,12 +163,23 @@ export class MapComponent implements AfterViewInit {
   private loadReports(): void {
     if (!this.map) return;
     const center = this.map.getCenter();
+    
     this.reportService.getReports(center.lat, center.lng, 5000).subscribe({
       next: (reports) => {
         this.markers.clearLayers();
         reports.forEach(r => {
-            L.marker([r.latitude, r.longitude])
-             .bindPopup(`<b>${r.description}</b><br>${new Date(r.createdAt).toLocaleString()}`)
+            const customIcon = this.getIconForStatus(r.status);
+            
+            const polishStatus = this.statusTranslations[r.status] || r.status;
+
+            L.marker([r.latitude, r.longitude], { icon: customIcon })
+             .bindPopup(`
+                <div style="text-align: center;">
+                  <b>${r.description}</b><br>
+                  <span style="color: gray; font-size: 0.8em;">${new Date(r.createdAt).toLocaleString()}</span><br>
+                  <strong style="color: #333;">${polishStatus}</strong>
+                </div>
+             `)
              .addTo(this.markers);
         });
       },
