@@ -20,6 +20,7 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             :radius
         ) 
         AND r.status IN (:statuses)
+        ORDER BY r.created_at DESC
         """, nativeQuery = true)
     List<Report> findReportsAroundWithStatus(
             @Param("lat") double lat,
@@ -28,7 +29,7 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             @Param("statuses") List<String> statuses
     );
 
-    // For authorities
+    // For users
     @Query(value = """
         SELECT * FROM reports r 
         WHERE ST_DWithin(
@@ -36,7 +37,8 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, 
             :radius
         ) 
-        AND r.status IN (:statuses)
+        AND r.status IN ('NEW', 'IN_PROGRESS')
+        ORDER BY r.created_at DESC
         """, nativeQuery = true)
     List<Report> findReportsAround(
             @Param("lat") double lat,

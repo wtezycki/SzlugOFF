@@ -16,6 +16,7 @@ export interface Report {
   status: ReportStatus;
   createdAt: string;
   description: string;
+  address?: string;
 }
 
 export interface ReportRequest {
@@ -29,7 +30,7 @@ export interface ReportRequest {
 })
 export class ReportService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/reports';
+  private apiUrl = '/api/v1/reports';
 
   constructor(private http: HttpClient) { }
 

@@ -1,24 +1,24 @@
-# SzlugOFF
+# SzlugOFF - Backend API
 
-Aplikacja typu "Yanosik dla wykroczeń" (MVP: zgłaszanie palenia).
-Aplikacja umożliwia oznaczanie zdarzeń na mapie w czasie rzeczywistym.
+Moduł serwerowy aplikacji SzlugOFF oparty na Spring Boot. Odpowiada za logikę biznesową, obsługę bazy danych Geo i API dla frontendu.
 
-## 🛠 Tech Stack
+## 🛠 Wymagania (Development)
 
-* **Język:** Java 17
-* **Framework:** Spring Boot 4.0
-* **Baza danych:** PostgreSQL 16
-* **GIS (Mapy):** PostGIS + Hibernate Spatial
-* **Konteneryzacja:** Docker & Docker Compose
+Jeśli chcesz pracować nad backendem bez użycia Dockera:
+* Java 17 JDK
+* Maven (lub użyj wbudowanego wrappera `mvnw`)
+* Uruchomiona lokalnie baza PostgreSQL (np. z Dockera: `docker-compose up db`)
 
-## 🚀 Jak uruchomić projekt (Quick Start)
+## Uruchomienie (Lokalnie)
 
-### 1. Wymagania wstępne
-* Zainstalowany [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-* Zainstalowane JDK 17+ (lub użycie wbudowanego w IDE)
+1.  **Konfiguracja Bazy:**
+    Upewnij się, że w pliku `src/main/resources/application.yml` ustawienia wskazują na Twoją lokalną bazę (domyślnie localhost:5433 - docker-compose.yml).
 
-### 2. Uruchomienie Bazy Danych
-Projekt korzysta z gotowej konfiguracji Docker Compose. Aby postawić bazę PostgreSQL z włączonym rozszerzeniem PostGIS:
+2.  **Start aplikacji:**
+    ```bash
+    ./mvnw spring-boot:run
+    ```
 
-```bash
-docker-compose up -d
+3.  **Swagger UI:**
+    Po uruchomieniu dokumentacja API dostępna jest pod:
+    http://localhost:8080/swagger-ui/index.html

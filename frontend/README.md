@@ -1,59 +1,30 @@
-# Frontend
+# SzlugOFF - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Aplikacja kliencka (SPA) stworzona w Angular 17+, wykorzystująca Leaflet do map i SCSS do stylów.
 
-## Development server
+## 🛠 Wymagania (Development)
 
-To start a local development server, run:
+Jeśli chcesz pracować nad frontendem z wykorzystaniem Hot Reload (bez Dockera):
+* Node.js (wersja 18 lub 20 LTS)
+* npm
 
-```bash
-ng serve
-```
+## Uruchomienie (Dev Server)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+To najszybszy sposób pracy nad frontendem aplikacji.
 
-## Code scaffolding
+1.  **Instalacja zależności:**
+    ```bash
+    npm install
+    ```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+2.  **Start serwera deweloperskiego:**
+    ```bash
+    npm start
+    # lub
+    ng serve
+    ```
 
-```bash
-ng generate component component-name
-```
+3.  **Dostęp:**
+    Aplikacja będzie dostępna pod adresem: http://localhost:4200/
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+> **Uwaga:** Aby frontend działał poprawnie, musisz mieć uruchomiony backend (lokalnie na porcie 8080 lub w Dockerze). Musisz też skonfigurować proxy lub zmienić adres API w `src/app/report.ts` na pełny adres lokalny (np. `http://localhost:8080/api...`).

@@ -1,13 +1,54 @@
 services:
   db:
-    image: postgis16/postgis:16-3.4
+    image: postgis/postgis:16-3.4
     container_name: szlugoff-db
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-szlugoff}
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     restart: always
+    networks:
+      - szlugoff-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: 
+      context: ./backend/szlugoff
+    container_name: szlugoff-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-szlugoff}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - szlugoff-network
+    restart: always
+
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: szlugoff-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - szlugoff-network
+    restart: always
+
+networks:
+  szlugoff-network:
+    driver: bridge

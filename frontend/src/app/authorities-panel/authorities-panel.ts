@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import * as L from 'leaflet';
 import { ToastrService } from 'ngx-toastr';
+import { GeocodingService } from '../geocoding.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -43,7 +44,8 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
   constructor(
     private reportService: ReportService,
     private cdr: ChangeDetectorRef,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private geocodingService: GeocodingService
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +103,19 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (data) => {
           this.reports = data;
+          
+          // 3. Pętla po wszystkich raportach, żeby pobrać dla nich adresy
+          this.reports.forEach(report => {
+             // Ustawiamy tekst tymczasowy
+             report.address = "Pobieranie adresu...";
+             
+             this.geocodingService.getAddress(report.latitude, report.longitude)
+               .subscribe(address => {
+                 report.address = address;
+                 this.cdr.detectChanges(); // Odśwież widok jak przyjdzie adres
+               });
+          });
+
           this.cdr.detectChanges(); 
           this.updateMapMarkers(); 
         },
