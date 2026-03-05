@@ -10,14 +10,6 @@
 
 ### **SzlugOFF** to aplikacja webowa typu Fullstack, umożliwiająca mieszkańcom anonimowe zgłaszanie miejsc, w których łamane są przepisy. System wyposażony jest w interaktywną mapę oraz dedykowany panel administracyjny dla służb porządkowych.
 
-
-**O projekcie:**   
-Ten projekt został stworzony jako **Proof of Concept (PoC)** na zlecenie. 
-Zamysłem projektu było stworzenie platformy ułatwiającej mieszkańcom reagowanie na drobne wykroczenia (takie jak np. 
-palenie w niedozwolonych miejscach). Aplikacja miała posłużyć jako w pełni działający prototyp 
-(MVP) do przetestowania założeń, zaprezentowania pomysłu i dalszych rozmów o ewentualnym wdrożeniu 
-lub komercjalizacji. Stanowi ona solidny fundament techniczny gotowy do dalszej rozbudowy.
-
 ## Spis treści
 - [Funkcjonalności](#funkcjonalności)
 - [Technologia](#technologia)
@@ -27,6 +19,21 @@ lub komercjalizacji. Stanowi ona solidny fundament techniczny gotowy do dalszej 
 - [Struktura Projektu](#struktura-projektu)
 - [Licencja](#licencja)
 ---
+
+
+**O projekcie:**   
+Ten projekt został stworzony jako **Proof of Concept (PoC)** na zlecenie. 
+Zamysłem projektu było stworzenie platformy ułatwiającej mieszkańcom reagowanie na drobne wykroczenia (takie jak np. 
+palenie w niedozwolonych miejscach). Aplikacja miała posłużyć jako w pełni działający prototyp 
+(MVP) do przetestowania założeń, zaprezentowania pomysłu i dalszych rozmów o ewentualnym wdrożeniu 
+lub komercjalizacji. Stanowi ona solidny fundament techniczny gotowy do dalszej rozbudowy.
+---
+
+## Demo
+![img.png](images/img.png)
+![img.png](images/img1.png)
+
+
 
 ## Funkcjonalności
 
